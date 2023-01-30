@@ -1,5 +1,4 @@
 require "active_support/core_ext/integer/time"
-
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -104,9 +103,9 @@ Rails.application.configure do
 
   # Check N+1 Queries / Eager loading
   config.after_initialize do
-    Bullet.enable = true
+    Bullet.enable = false
     # Bullet.alert = true
-    Bullet.rails_logger = true
+    Bullet.rails_logger = false
   end
 
   # https://github.com/JackC/tod/#activemodel-serializable-attribute-support

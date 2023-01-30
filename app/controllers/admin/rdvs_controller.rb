@@ -35,7 +35,7 @@ class Admin::RdvsController < AgentAuthController
       current_agent,
       @scoped_organisations.ids,
       parsed_params
-    ).deliver_later
+    ).deliver_now
     flash[:notice] = I18n.t("layouts.flash.confirm_export_send_when_done", agent_email: current_agent.email)
     redirect_to admin_organisation_rdvs_path(organisation_id: current_organisation.id)
   end

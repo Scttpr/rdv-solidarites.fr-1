@@ -31,14 +31,17 @@ module HumanAttributeValue
     def human_attribute_value(attr_name, value, options = {})
       return if value.nil? || value == ""
 
-      options = { default: value }.merge(options) # make sure to return the value unchanged if not found
-      unless options.delete(:disable_cast)
-        value = attribute_types[attr_name.to_s].cast(value)
-      end
+      # Cache was added to improve exports performance
+      Rails.cache.fetch("#{self.class.name}_#{attr_name}_#{value}_#{options.inspect}", expires_in: 1.hour) do
+        options = { default: value }.merge(options) # make sure to return the value unchanged if not found
+        unless options.delete(:disable_cast)
+          value = attribute_types[attr_name.to_s].cast(value)
+        end
 
-      context = options.delete(:context)
-      attr_i18n_scope = [attr_name.to_s.pluralize, context].compact.join("/")
-      human_attribute_name("#{attr_i18n_scope}.#{value}", options)
+        context = options.delete(:context)
+        attr_i18n_scope = [attr_name.to_s.pluralize, context].compact.join("/")
+        human_attribute_name("#{attr_i18n_scope}.#{value}", options)
+      end
     end
 
     # Returns a hash of the attribute values => localized text.
