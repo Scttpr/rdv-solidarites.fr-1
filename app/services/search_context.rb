@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/ClassLength
 class SearchContext
   attr_reader :errors, :query, :address, :city_code, :street_ban_id, :latitude, :longitude,
-              :motif_name_with_location_type
+              :motif_name_with_location_type, :prescripteur
 
   # rubocop:disable Metrics/MethodLength
   def initialize(current_user, query = {})
@@ -171,6 +171,11 @@ class SearchContext
 
   def creneaux
     @creneaux ||= creneaux_search.creneaux
+      .uniq(&:starts_at) # On n'affiche qu'un créneau par horaire, même si plusieurs agents sont dispos
+  end
+
+  def available_collective_rdvs
+    @available_collective_rdvs ||= creneaux_search.available_collective_rdvs
   end
 
   def creneaux_search
