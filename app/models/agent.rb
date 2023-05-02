@@ -54,7 +54,7 @@ class Agent < ApplicationRecord
   has_many :agent_territorial_access_rights, dependent: :destroy
   has_many :plage_ouvertures, dependent: :destroy
   has_many :absences, dependent: :destroy
-  has_many :agents_rdvs, dependent: :destroy
+  has_many :agents_rdvs, dependent: :restrict_with_exception
   has_many :roles, class_name: "AgentRole", dependent: :destroy
   has_many :territorial_roles, class_name: "AgentTerritorialRole", dependent: :destroy
   has_many :sector_attributions, dependent: :destroy
