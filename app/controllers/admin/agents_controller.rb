@@ -6,7 +6,6 @@ class Admin::AgentsController < AgentAuthController
   def index
     @agents = policy_scope(Agent)
       .includes(:service, :roles, :organisations)
-      .active
 
     @agents = @agents.joins(:organisations).where(organisations: { id: current_organisation.id }) if current_organisation
     @invited_agents_count = @agents.invitation_not_accepted.created_by_invite.count

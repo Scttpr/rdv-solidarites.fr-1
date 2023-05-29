@@ -58,8 +58,6 @@ class Rdv < ApplicationRecord
   # Delegates
   delegate :home?, :phone?, :public_office?, :bookable_publicly?, :service_social?, :follow_up?, :service, :collectif?, :collectif, :individuel?, to: :motif
 
-  alias_attribute :soft_deleted?, :deleted_at?
-
   # Validations
   validates :starts_at, :ends_at, :agents, presence: true
   validate :lieu_is_not_disabled_if_needed
@@ -78,7 +76,6 @@ class Rdv < ApplicationRecord
   # voir Outlook::EventSerializerAndListener pour d'autres callbacks
 
   # Scopes
-  default_scope { where(deleted_at: nil) }
   scope :not_cancelled, -> { where(status: NOT_CANCELLED_STATUSES) }
   scope :past, -> { where("starts_at < ?", Time.zone.now) }
   scope :future, -> { where("starts_at > ?", Time.zone.now) }
@@ -332,15 +329,6 @@ class Rdv < ApplicationRecord
       .admin_organisation_rdv_url(organisation, id, host: agent.domain.host_name)
 
     "plus d'infos dans #{agent.domain_name}: #{link}"
-  end
-
-  def soft_delete
-    # disable the :updated webhook because we want to manually trigger a :destroyed webhook
-    self.skip_webhooks = true
-    return false unless update(deleted_at: Time.zone.now)
-
-    generate_payload_and_send_webhook_for_destroy
-    true
   end
 
   def update_users_count

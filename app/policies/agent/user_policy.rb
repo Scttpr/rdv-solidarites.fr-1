@@ -2,7 +2,7 @@
 
 class Agent::UserPolicy < DefaultAgentPolicy
   def show?
-    same_org? && not_deleted?
+    same_org?
   end
 
   def create?
@@ -13,19 +13,19 @@ class Agent::UserPolicy < DefaultAgentPolicy
   end
 
   def invite?
-    same_org? && not_deleted?
+    same_org?
   end
 
   def update?
-    same_org? && not_deleted?
+    same_org?
   end
 
   def destroy?
-    same_org? && not_deleted?
+    same_org?
   end
 
   def versions?
-    admin_and_same_org? && not_deleted?
+    admin_and_same_org?
   end
 
   class Scope < Scope
@@ -41,10 +41,6 @@ class Agent::UserPolicy < DefaultAgentPolicy
   end
 
   protected
-
-  def not_deleted?
-    @record.deleted_at.nil?
-  end
 
   def same_org?
     # we cannot use @record.organisation_ids for Users because it uses a
