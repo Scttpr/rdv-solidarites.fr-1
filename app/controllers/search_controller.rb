@@ -7,7 +7,7 @@ class SearchController < ApplicationController
   after_action :allow_iframe
 
   def search_rdv
-    @context = SearchContext.new(current_user, search_params.to_h)
+    @context = SearchContext.new(current_user, search_params.to_h, is_invited: user_by_invitation_token.present?)
   end
 
   def public_link_with_internal_organisation_id

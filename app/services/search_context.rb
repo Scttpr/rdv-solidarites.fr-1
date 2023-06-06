@@ -6,10 +6,9 @@ class SearchContext
               :motif_name_with_location_type, :prescripteur
 
   # rubocop:disable Metrics/MethodLength
-  def initialize(current_user, query = {})
+  def initialize(current_user, query = {}, is_invited: false)
     @current_user = current_user
     @query = query
-    @invitation_token = query[:invitation_token]
     @latitude = query[:latitude]
     @longitude = query[:longitude]
     @address = query[:address]
@@ -28,6 +27,7 @@ class SearchContext
     @start_date = query[:date]
     @referent_ids = query[:referent_ids]
     @prescripteur = query[:prescripteur]
+    @is_invited = is_invited
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -67,7 +67,7 @@ class SearchContext
   end
 
   def invitation?
-    @invitation_token.present?
+    @is_invited
   end
 
   def departement

@@ -7,62 +7,72 @@ module TokenInvitable
   extend ActiveSupport::Concern
 
   included do
-    prepend_before_action :handle_invitation_token, if: -> { invitation_token.present? }
+    prepend_before_action :store_token_in_session_and_redirect, if: -> { params[:invitation_token].present? }
+    prepend_before_action :sign_in_with_session_token, if: -> { session[:invitation_token].present? }
   end
 
   private
 
-  def handle_invitation_token
+  def store_token_in_session_and_redirect
+    return redirect_with_error(t("devise.invitations.invitation_token_invalid")) unless token_valid?
+    return redirect_with_error(t("devise.invitations.current_user_mismatch")) if current_user_mismatch?
+
     store_token_in_session
 
-    return delete_token_from_session_and_redirect(t("devise.invitations.invitation_token_invalid")) \
-      if invited_user.blank? && current_user.blank? # we don't check the token if a user is logged in already
-
-    return delete_token_from_session_and_redirect(t("devise.invitations.current_user_mismatch")) \
-      if current_user_mismatch?
-
-    return if invited_user.blank? || current_user.present?
-
-    invited_user.only_invited!(rdv: rdv_user_by_token&.rdv)
-    sign_in(invited_user, store: false)
-  end
-
-  def invitation_token
-    invitation_token_param || session[:invitation_token]
-  end
-
-  def invitation_token_param
-    params[:invitation_token]
+    redirect_to current_path_without_invitation_token
   end
 
   def store_token_in_session
-    session[:invitation_token] = invitation_token_param if invitation_token_param.present?
+    session[:invitation_token] = params[:invitation_token]
+  end
+
+  def token_valid?
+    invited_user.present?
+  end
+
+  def current_path_without_invitation_token
+    current_url_params = Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
+    current_url_params.delete(:invitation_token)
+    current_url_params.any? ? "#{request.path}?#{current_url_params.to_query}" : request.path
+  end
+
+  def sign_in_with_session_token
+    return session.delete(:invitation_token) unless token_valid?
+    return session.delete(:invitation_token) if current_user_mismatch?
+
+    invited_user.only_invited!(rdv: rdv_user_by_invitation_token&.rdv)
+    sign_in(invited_user, store: false)
   end
 
   def current_user_mismatch?
     invited_user.present? && current_user.present? && current_user != invited_user
   end
 
-  def delete_token_from_session_and_redirect(error_msg)
-    session.delete(:invitation_token)
+  def redirect_with_error(error_msg)
     flash[:error] = error_msg
     redirect_to root_path
   end
 
   def invited_user
-    user_by_token || rdv_user_by_token&.user&.user_to_notify
+    user_by_invitation_token || rdv_user_by_invitation_token&.user&.user_to_notify
   end
 
   def rdv_by_token
-    rdv_user_by_token&.rdv
+    rdv_user_by_invitation_token&.rdv
   end
 
-  def user_by_token
+  def invitation_token
+    params[:invitation_token] || session[:invitation_token]
+  end
+
+  def user_by_invitation_token
     # find_by_invitation_token is a method added by the devise_invitable gem
-    @user_by_token ||= User.find_by_invitation_token(session[:invitation_token], true)
+    @user_by_invitation_token ||=
+      invitation_token.present? ? User.find_by_invitation_token(invitation_token, true) : nil
   end
 
-  def rdv_user_by_token
-    @rdv_user_by_token ||= RdvsUser.find_by_invitation_token(session[:invitation_token], true)
+  def rdv_user_by_invitation_token
+    @rdv_user_by_invitation_token ||=
+      invitation_token.present? ? RdvsUser.find_by_invitation_token(invitation_token, true) : nil
   end
 end
