@@ -9,6 +9,6 @@ class SuperAdmin < ApplicationRecord
   ## -
 
   def full_name
-    "Équipe technique de RDV-Solidarités"
+    "l'équipe technique de RDV-Solidarités"
   end
 end
