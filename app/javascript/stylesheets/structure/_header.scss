@@ -2,13 +2,35 @@ header {
     box-shadow: 0px 3px 14px 0px $lightgrey;
 }
 
+.navbar-dsfr {
+    padding: 1.5rem 0;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
 .logo-dsfr {
     max-height: 3.3rem;
     padding: 0.3rem;
+}
+
+.logo-brand {
+    padding: 0.3rem;
+    max-width: 6rem;
 }
 
 .link-dsfr {
     min-height: 3rem;
     font-size: 1rem;
     line-height: 1.5rem;
+}
+
+.header-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
