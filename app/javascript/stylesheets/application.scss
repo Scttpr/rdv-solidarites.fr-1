@@ -27,6 +27,7 @@
 
 // Structure
 @import "./structure/general";
+@import "./structure/header";
 @import "./structure/footer";
 @import "./structure/page-head";
 @import "./structure/authentication";
@@ -194,6 +195,15 @@ section {
   padding: 0.5rem 1rem;
 }
 
+.navbar-dsfr {
+  padding: 1.5rem 0;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .navbar-brand {
   display: inline-block;
   padding-top: 0.3125rem;
@@ -215,4 +225,12 @@ section {
   @include media-breakpoint-down(md) {
     margin-top: 0;
   }
+}
+
+/* =========================================
+   DSFR BUTTONS
+   ========================================= */
+
+.btn {
+  border-radius: 0;
 }

@@ -55,7 +55,7 @@ module ApplicationHelper
   
   def link_logo_dsfr
     link_to root_path do
-      image_tag current_domain.logo_path, height: 40, alt: current_domain.name, class: "bg-primary"
+      image_tag current_domain.logo_path, alt: current_domain.name, class: "bg-primary logo-dsfr"
     end
   end
 
