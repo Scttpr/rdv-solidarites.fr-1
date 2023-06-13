@@ -1,15 +1,23 @@
 header {
     box-shadow: 0px 3px 14px 0px $lightgrey;
+
+    .alert-warning {
+        color: $gray-900;
+        background-color: $white;
+        border: 1px solid $gray-900;
+        border-radius: 0;
+    }
 }
 
 .navbar-dsfr {
-    padding: 1.5rem 0;
+    padding: .8rem 0;
     position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-grow: inherit;
   }
 
 .logo-dsfr {
@@ -23,14 +31,29 @@ header {
 }
 
 .link-dsfr {
-    min-height: 3rem;
+    margin-bottom: 1rem;
     font-size: 1rem;
     line-height: 1.5rem;
+    color: $blue;
+
+    &:hover {
+        background-color: rgb(246, 246, 246);
+    }
 }
 
-.header-brand {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+// Responsive Mobile
+
+@media (max-width: 991px) {
+    .navbar-dsfr {
+        align-items: flex-start;
+    }
 }
+
+@media (max-width: 991px) {
+    .header-brand {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+  }
