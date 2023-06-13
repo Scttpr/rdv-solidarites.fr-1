@@ -52,6 +52,12 @@ module ApplicationHelper
       image_tag current_domain.logo_path, height: 40, alt: current_domain.name, class: "d-inline logo"
     end
   end
+  
+  def link_logo_dsfr
+    link_to root_path do
+      image_tag current_domain.logo_path, height: 40, alt: current_domain.name, class: "bg-primary"
+    end
+  end
 
   def errors_full_messages(object)
     errors = object.respond_to?(:not_benign_errors) ? object.not_benign_errors : object.errors
